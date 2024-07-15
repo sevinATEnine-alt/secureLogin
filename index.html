@@ -1,1 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/@thumbmarkjs/thumbmarkjs/dist/thumbmark.umd.js"></script>
+<script>
+ThumbmarkJS.getFingerprint().then(
+    function(fp) {
 
+        fetch('https://api.ipify.org/?format=plain').then(r=>r.text()).then(t=>{
+            var ip = t;
+            var lang = window.navigator.language;
+            var userAgent = window.navigator.userAgent;
+
+            console.log(fp);
+        });
+
+    }
+);
+</script>
+
+</body>
+</html>
