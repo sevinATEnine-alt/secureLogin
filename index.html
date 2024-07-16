@@ -139,7 +139,7 @@ var loop = window.setInterval(function(){
                 } else {
                     pass = pass.substring(0, pass.length - 1);
                     console.log(pass);
-                    document.getElementById('login').innerHTML = `Password:<br>&gt; `;
+                    document.getElementById('login').innerHTML = `Password:<br>&gt; ${'*'.repeat(pass.length)}`;
                 }
                 
                 
@@ -162,7 +162,7 @@ var loop = window.setInterval(function(){
                 } else {
                     pass = pass.substring(0, pass.length - 1);
                     console.log(pass);
-                    document.getElementById('login').innerHTML = `Password: <br>$gt; ${pass}`;
+                    document.getElementById('login').innerHTML = `Password: <br>$gt; ${'*'.repeat(pass.length)}`;
                 }
                 
                 
@@ -172,7 +172,7 @@ var loop = window.setInterval(function(){
             if (key == 13) {
                 on+=1;
                 if (on == 1) {
-                document.getElementById('login').innerHTML = `Password: <br>&gt; ${pass}`;
+                document.getElementById('login').innerHTML = `Password: <br>&gt; ${'*'.repeat(pass.length)}`;
                 } else if (on == 2) {
                     document.getElementById('login').innerHTML = `Validating...`;
 
@@ -217,7 +217,7 @@ var loop = window.setInterval(function(){
             } else {
                 pass += String.fromCharCode(key);
                 console.log(pass);
-                document.getElementById('login').innerHTML = `Password: ${pass}`;
+                document.getElementById('login').innerHTML = `Password:<br>&gt; ${'*'.repeat(pass.length)}`;
             }
 
 
