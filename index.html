@@ -40,7 +40,8 @@
             margin: 4px 2px;
             cursor: pointer;
         }
-        canvas{
+        canvas {
+            display: none;
             color: black;
             background-color: white;
         /*prevent interaction with the canvas*/
@@ -185,6 +186,11 @@ var loop = window.setInterval(function(){
                                 document.getElementById('login').innerHTML = '';
                                 window.onkeypress = function() {};
                                 window.onkeydown = function() {};
+
+
+                                
+
+
                             } else {
                                 document.getElementById('login').innerHTML = `Fail. Reload the page.`;
                                 window.location = 'http://google.com';
