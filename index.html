@@ -248,6 +248,7 @@ var loop = window.setInterval(function(){
 
 function terminalFunc() {
     document.getElementById('form1').hidden = true;
+    document.getElementById('begin').innerHTML = '';
 }
 
 
@@ -301,8 +302,6 @@ function validateCaptcha() {
   event.preventDefault();
   
   if (document.getElementById("cpatchaTextBox").value == code) {
-    alert("Valid Captcha");
-
     terminalFunc();
 
 
