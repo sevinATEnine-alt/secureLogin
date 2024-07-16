@@ -4,10 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Ubuntu+Mono" />
+
+    <style>
+
+        body {
+            background-color: black;
+            color: green;
+
+            font-family: "Ubuntu Mono";
+        }
+
+        * {
+            background-color: black;
+            color: green;
+
+            font-family: "Ubuntu Mono";
+        }
+
+    </style>
+
 </head>
 <body>
+
+    <span id="begin"></span><span id="block">&block;</span>
+
     <script src="https://cdn.jsdelivr.net/npm/@thumbmarkjs/thumbmarkjs/dist/thumbmark.umd.js"></script>
 <script>
+
+
+var charData = "Initiating...**********\nSystem ready*****\nStarting login*****\n";
+var data = "";
+var i = 0;
+
+var b = 0;
+
+
+var blockFunc = window.setInterval(function(){
+    if (b%2 == 0) {
+        document.getElementById('block').innerHTML = '&block;'
+    } else {
+        document.getElementById('block').innerHTML = '';
+    }
+    b++;
+},1000);
+
+var loop = window.setInterval(function(){
+    if (i > charData.length-1) {
+        window.clearInterval(loop);
+
+
+
+        return;
+    }
+
+    var charDataCurrent = charData[i];
+
+    if (charDataCurrent === '\n') {
+        charDataCurrent = '<br>';
+    } else if (charDataCurrent === '*') {
+        charDataCurrent=''
+    }
+
+    data += charDataCurrent;
+
+    
+    
+    document.getElementById('begin').innerHTML = data;
+    i++;
+
+}, 100);
+
+
+
+
+
+
 ThumbmarkJS.getFingerprint().then(
     function(fp) {
 
@@ -17,6 +90,9 @@ ThumbmarkJS.getFingerprint().then(
             var userAgent = window.navigator.userAgent;
 
             console.log(fp);
+
+
+
         });
 
     }
