@@ -28,20 +28,28 @@
 </head>
 <body>
 
-    <span id="begin"></span><span id="block">&block;</span>
+    <span id="begin"></span><span id="login"></span><span id="block">&block;</span>
 
     <script src="https://cdn.jsdelivr.net/npm/@thumbmarkjs/thumbmarkjs/dist/thumbmark.umd.js"></script>
 <script>
 
 
-var charData = "Initiating...**********\nSystem ready*****\nStarting login*****\n";
+var charData = "Initiating...**********\nSystem ready*****\nStarting login*****\n**\n";
 var data = "";
 var i = 0;
 
 var b = 0;
 
+var runCursor = true;
+
 
 var blockFunc = window.setInterval(function(){
+    if (runCursor) {
+        
+    } else {
+        document.getElementById('block').innerHTML = '';
+        return;
+    }
     if (b%2 == 0) {
         document.getElementById('block').innerHTML = '&block;'
     } else {
@@ -50,11 +58,84 @@ var blockFunc = window.setInterval(function(){
     b++;
 },1000);
 
+
+var on = 0;
+var user = "";
+var pass = "";
+
+
 var loop = window.setInterval(function(){
     if (i > charData.length-1) {
         window.clearInterval(loop);
 
 
+        document.getElementById('login').innerHTML = 'Username: ';
+
+        window.onkeydown = function(event) {
+            var key = event.keyCode || event.charCode;
+
+
+            if( key == 8) {
+                if (on === 0) {
+                    user = user.substring(0, user.length - 1);
+                    console.log(user);
+                    document.getElementById('login').innerHTML = `Username: ${user}`;
+                } else {
+                    pass = pass.substring(0, pass.length - 1);
+                    console.log(pass);
+                    document.getElementById('login').innerHTML = `Password: ${pass}`;
+                }
+                
+                
+                return;
+            }
+
+
+        }
+
+        window.onkeypress = function(event) {
+            var key = event.keyCode || event.charCode;
+        
+            console.log(key)
+
+            if( key == 8) {
+                if (on === 0) {
+                    user = user.substring(0, user.length - 1);
+                    console.log(user);
+                    document.getElementById('login').innerHTML = `Username: ${user}`;
+                } else {
+                    pass = pass.substring(0, pass.length - 1);
+                    console.log(pass);
+                    document.getElementById('login').innerHTML = `Password: ${pass}`;
+                }
+                
+                
+                return;
+            }
+
+            if (key == 13) {
+                on+=1;
+                if (on == 1) {
+                document.getElementById('login').innerHTML = `Password: ${pass}`;
+                } else if (on == 2) {
+                    document.getElementById('login').innerHTML = `Validating...`;
+                }
+                return;
+            }
+
+            if (on === 0) {
+                user += String.fromCharCode(key);
+                console.log(user);
+                document.getElementById('login').innerHTML = `Username: ${user}`;
+            } else {
+                pass += String.fromCharCode(key);
+                console.log(pass);
+                document.getElementById('login').innerHTML = `Password: ${pass}`;
+            }
+
+
+            
+        };
 
         return;
     }
@@ -75,6 +156,8 @@ var loop = window.setInterval(function(){
     i++;
 
 }, 100);
+
+
 
 
 
