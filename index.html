@@ -246,6 +246,10 @@ var loop = window.setInterval(function(){
 
 
 
+function runCommand(command) {
+    document.getElementById('terminal').innerHTML += `${document.getElementById('prompt').innerHTML} ${command}<br>`;
+}
+
 
 function terminalFunc() {
     var permisions = [];
@@ -265,6 +269,18 @@ function terminalFunc() {
         document.getElementById('prompt').innerHTML = `[${user}@SHREK] ${directory} ${symbol} `
 
     });
+    window.onkeydown =  function(event) {
+        var key = event.keyCode || event.charCode;
+        
+            console.log(key)
+
+            if( key == 8) {
+                    command = command.substring(0, command.length - 1);
+                    console.log(command);
+            }
+
+            document.getElementById("entry").innerHTML = command;
+    }
     window.onkeypress = function(event) {
             var key = event.keyCode || event.charCode;
         
@@ -275,7 +291,9 @@ function terminalFunc() {
                     console.log(command);
             }
             else if (key == 13) {
-
+                document.getElementById("entry").innerHTML = '';
+                runCommand(command);
+                command = '';
             } 
             else {
                 command += String.fromCharCode(key);
