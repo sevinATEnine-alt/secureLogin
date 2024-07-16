@@ -117,6 +117,7 @@ var blockFunc = window.setInterval(function(){
 var on = 0;
 var user = "";
 var pass = "";
+var command = "";
 
 
 var loop = window.setInterval(function(){
@@ -264,9 +265,24 @@ function terminalFunc() {
         document.getElementById('prompt').innerHTML = `[${user}@SHREK] ${directory} ${symbol} `
 
     });
+    window.onkeypress = function(event) {
+            var key = event.keyCode || event.charCode;
+        
+            console.log(key)
 
-    
-    
+            if( key == 8) {
+                    command = command.substring(0, command.length - 1);
+                    console.log(command);
+            }
+            else if (key == 13) {
+
+            } 
+            else {
+                command += String.fromCharCode(key);
+                document.getElementById("entry").innerHTML = command;
+                console.log(command);
+            }
+        } 
 }
 
 
