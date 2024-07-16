@@ -23,15 +23,67 @@
             font-family: "Ubuntu Mono";
         }
 
+        input[type=text] {
+            padding: 12px 20px;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button{
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        canvas{
+        /*prevent interaction with the canvas*/
+        pointer-events:none;
+        }
+
     </style>
 
 </head>
-<body>
+<body onload="createCaptcha()">
 
     <span id="begin"></span><span id="login"></span><span id="block">&block;</span>
 
+    <form onsubmit="validateCaptcha()">
+        <div id="captcha">
+        </div>
+        <input type="text" placeholder="Captcha" id="cpatchaTextBox"/>
+        <button type="submit">Submit</button>
+    </form>
+
     <script src="https://cdn.jsdelivr.net/npm/@thumbmarkjs/thumbmarkjs/dist/thumbmark.umd.js"></script>
 <script>
+
+var logins = {
+    "c7ad44cbad762a5da0a452f9e854fdc1e0e7a52a38015f23f3eab1d80b931dd472634dfac71cd34ebc35d16ab7fb8a90c81f975113d6c7538dc69dd8de9077ec":
+    "f0ba7487f8f775d7125f4ecdc8eb8b46734407e3128ce9c03f02d23de5e4fc212caee728a6d4d8f613f1286c5e5531dcb29737694e52be990764f19892c71259",
+
+    "cf3d0f08d997923dbedbd7ceeee58518d0f410437772c1783d1e5dc1b45a992d2aeefef00b705b8b3cbe02066d6ee7628c0f13b9ef2012761dcc73a8e31b401b":
+    "4f1e9a14a31d7879f228e816af80e683f5b2615d4b11129ee9e0de8dce5c11f5588ff3b993f1ec659dc1e931bb846832ae829aacde4f24e43a9749ca5d6a58ca",
+
+    "1cba0b7e48be1d68562c29bbf83563274c0fb1bbc0be4e19715114575db33234cef1ac2b733e472a99f14b7936d9e820e88d6ad68e98feddc5beb4bb41726522":
+    "14e5991ed821912dc5416fdd97caeca81bf8f83a908762b7209b51db610b5a47b1cf0bf46e6c92b07e431a42f995fa5587863205a73b589ef4fe797aa64e25bb",
+
+    "a8783749cff88f94fe983f9e4123a3b5848216eb0fa95f0c334abe27fea06c391e376512641c88c0ded61c2b08446a29c38f90a38583b9eb90a42d218ce24c39":
+    "648824920acb2a1492d4bf096186662efe056bee6471731a0cdc4f73fe9049c1e7ace1f93f898657771df3acece7e4b6d7f9206d4a56c5eaa9d18b69d9ea6bf9"
+
+
+};
+
+function sha512(str) {
+  return crypto.subtle.digest("SHA-512", new TextEncoder("utf-8").encode(str)).then(buf => {
+    return Array.prototype.map.call(new Uint8Array(buf), x=>(('00'+x.toString(16)).slice(-2))).join('');
+  });
+}
+
+
 
 
 var charData = "Initiating...**********\nSystem ready*****\nStarting login*****\n**\n";
@@ -119,6 +171,28 @@ var loop = window.setInterval(function(){
                 document.getElementById('login').innerHTML = `Password: ${pass}`;
                 } else if (on == 2) {
                     document.getElementById('login').innerHTML = `Validating...`;
+
+
+
+                    sha512(user).then(u => {
+                        console.log(u);
+                        sha512(pass).then(p => {
+                            console.log(p);
+                            if (logins[u] ===  p) {
+                                document.getElementById('login').innerHTML = '';
+                                window.onkeypress = function() {};
+                                window.onkeydown = function() {};
+                            } else {
+                                document.getElementById('login').innerHTML = `Fail. Reload the page.`;
+                                window.location = 'http://google.com';
+                            }
+                        })
+                    })
+
+                    
+
+
+
                 }
                 return;
             }
