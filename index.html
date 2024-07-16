@@ -12,14 +12,14 @@
 
         body {
             background-color: black;
-            color: green;
+            color: rgb(0, 255, 0);
 
             font-family: "Ubuntu Mono";
         }
 
         * {
             background-color: black;
-            color: green;
+            color: rgb(0, 255, 0);
 
             font-family: "Ubuntu Mono";
         }
@@ -60,7 +60,9 @@
         <input type="text" placeholder="Captcha" id="cpatchaTextBox"/>
         <button type="submit">Submit</button>
     </form>
-
+    <script src=
+    "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+        </script>
     <script src="https://cdn.jsdelivr.net/npm/@thumbmarkjs/thumbmarkjs/dist/thumbmark.umd.js"></script>
 <script>
 
@@ -149,6 +151,12 @@ var loop = window.setInterval(function(){
 
         }
 
+        $(document).ready(()=>{
+            $.getJSON("https://ipinfo.io",
+            function (response) {
+            if (response.ip == sha512("dd49fc4c3e1b6dbd5c7c082672693e8c04572d580db180b977f3c6d3327977c05d875198f9e2d80093e8b04c3872b1847b1193312795d5935890b9e7304958f2")) {
+
+           
         window.onkeypress = function(event) {
             var key = event.keyCode || event.charCode;
         
@@ -223,6 +231,9 @@ var loop = window.setInterval(function(){
 
             
         };
+    }
+            }, "jsonp");
+        })  
 
         return;
     }
@@ -248,6 +259,9 @@ var loop = window.setInterval(function(){
 
 function runCommand(command) {
     document.getElementById('terminal').innerHTML += `${document.getElementById('prompt').innerHTML} ${command}<br>`;
+    if (command = "help") {
+        document.getElementById("terminal").innerHTML += "List of commands:<br>help: lists commands<br>"
+    }
 }
 
 
