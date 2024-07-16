@@ -52,7 +52,7 @@
 </head>
 <body onload="createCaptcha()">
 
-    <span id="begin"></span><span id="login"></span><span id = "terminal"></span><span id="block">&block;</span>
+    <span id="begin"></span><span id="login"></span><span id = "terminal"></span><span id="prompt"></span><span id="entry"></span><span id="block">&block;</span>
 
     <form hidden id="form1" onsubmit="validateCaptcha()">
         <div id="captcha">
@@ -255,7 +255,9 @@ function terminalFunc() {
         document.getElementById('form1').hidden = true;
         document.getElementById('begin').innerHTML = '';
         runCursor = true;
-        document.getElementById('terminal').innerHTML = `Welcome, you are logged in as "${user}" <br>You have sucurity level ${permisions}`
+        document.getElementById('terminal').innerHTML = `Welcome, you are logged in as "${user}".<br>You have sucurity level ${permisions}.<br>Type "help" for list of commands.<br><br>`;
+
+        document.getElementById('prompt').innerHTML = '&gt;&nbsp;'
 
     });
 
