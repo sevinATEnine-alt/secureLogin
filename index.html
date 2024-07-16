@@ -247,10 +247,19 @@ var loop = window.setInterval(function(){
 
 
 function terminalFunc() {
-    document.getElementById('form1').hidden = true;
-    document.getElementById('begin').innerHTML = '';
-    runCursor = true;
-    document.getElementById('terminal').innerHTML = `Welcome, you are logged in as "${user}" <br>You have sucurity level insert`
+    var permisions = [];
+
+    sha512(user).then(u => {
+        permisions = [2,1,1,1][Object.entries(logins).map(e=>e[0]).indexOf(u)]
+
+        document.getElementById('form1').hidden = true;
+        document.getElementById('begin').innerHTML = '';
+        runCursor = true;
+        document.getElementById('terminal').innerHTML = `Welcome, you are logged in as "${user}" <br>You have sucurity level ${permisions}`
+
+    });
+
+    
     
 }
 
