@@ -41,9 +41,8 @@
             cursor: pointer;
         }
         canvas {
-            display: none;
             color: black;
-            background-color: white;
+            background-color: white !important;
         /*prevent interaction with the canvas*/
         pointer-events:none;
         }
@@ -55,7 +54,7 @@
 
     <span id="begin"></span><span id="login"></span><span id="block">&block;</span>
 
-    <form onsubmit="validateCaptcha()">
+    <form hidden id="form1" onsubmit="validateCaptcha()">
         <div id="captcha">
         </div>
         <input type="text" placeholder="Captcha" id="cpatchaTextBox"/>
@@ -187,13 +186,17 @@ var loop = window.setInterval(function(){
                                 window.onkeypress = function() {};
                                 window.onkeydown = function() {};
 
+                                document.getElementById('form1').hidden=false;
+                                runCursor = false;
+
 
                                 
 
 
                             } else {
                                 document.getElementById('login').innerHTML = `Fail. Reload the page.`;
-                                window.location = 'http://google.com';
+                                window.onkeypress = function() {};
+                                window.onkeydown = function() {};
                             }
                         })
                     })
@@ -243,7 +246,9 @@ var loop = window.setInterval(function(){
 
 
 
-
+function terminalFunc() {
+    document.getElementById('form1').hidden = true;
+}
 
 
 
@@ -296,7 +301,11 @@ function validateCaptcha() {
   event.preventDefault();
   
   if (document.getElementById("cpatchaTextBox").value == code) {
-    alert("Valid Captcha")
+    alert("Valid Captcha");
+
+    terminalFunc();
+
+
   }else{
     alert("Invalid Captcha. try Again");
     createCaptcha();
