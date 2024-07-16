@@ -248,16 +248,20 @@ var loop = window.setInterval(function(){
 
 function terminalFunc() {
     var permisions = [];
+    var directory = '~';
+    var symbol = '$';
 
     sha512(user).then(u => {
-        permisions = [2,1,1,1][Object.entries(logins).map(e=>e[0]).indexOf(u)]
+        permisions = [2,1,1,1][Object.entries(logins).map(e=>e[0]).indexOf(u)];
+        symbol = ['#', '$', '$', '$'][Object.entries(logins).map(e=>e[0]).indexOf(u)];
+        directory = ['/', '~', '~', '~'][Object.entries(logins).map(e=>e[0]).indexOf(u)];
 
         document.getElementById('form1').hidden = true;
         document.getElementById('begin').innerHTML = '';
         runCursor = true;
         document.getElementById('terminal').innerHTML = `Welcome, you are logged in as "${user}".<br>You have sucurity level ${permisions}.<br>Type "help" for list of commands.<br><br>`;
 
-        document.getElementById('prompt').innerHTML = `${user}&gt;&nbsp;`
+        document.getElementById('prompt').innerHTML = `[${user}@SHREK] ${directory} ${symbol} `
 
     });
 
