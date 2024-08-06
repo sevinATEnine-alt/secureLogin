@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,7 +52,6 @@
 
 </head>
 <body onload="createCaptcha()">
-
     <span id="begin"></span><span id="login"></span><span id = "terminal"></span><span id="prompt"></span><span id="entry"></span><span id="block">&block;</span>
 
     <form hidden id="form1" onsubmit="validateCaptcha()">
@@ -64,8 +64,8 @@
     "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
         </script>
     <script src="https://cdn.jsdelivr.net/npm/@thumbmarkjs/thumbmarkjs/dist/thumbmark.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js"></script>
 <script>
-
 var logins = {
     "c7ad44cbad762a5da0a452f9e854fdc1e0e7a52a38015f23f3eab1d80b931dd472634dfac71cd34ebc35d16ab7fb8a90c81f975113d6c7538dc69dd8de9077ec":
     "f0ba7487f8f775d7125f4ecdc8eb8b46734407e3128ce9c03f02d23de5e4fc212caee728a6d4d8f613f1286c5e5531dcb29737694e52be990764f19892c71259",
@@ -80,7 +80,7 @@ var logins = {
     "648824920acb2a1492d4bf096186662efe056bee6471731a0cdc4f73fe9049c1e7ace1f93f898657771df3acece7e4b6d7f9206d4a56c5eaa9d18b69d9ea6bf9"
 
 
-};
+}; // Encrypted login data(remember to change to logins.json)
 
 function sha512(str) {
   return crypto.subtle.digest("SHA-512", new TextEncoder("utf-8").encode(str)).then(buf => {
@@ -90,14 +90,13 @@ function sha512(str) {
 
 
 
-
 var charData = "Initiating...**********\nSystem ready*****\nStarting login*****\n**\n";
 var data = "";
 var i = 0;
-
 var b = 0;
 
 var runCursor = true;
+var LoggedIn = false;
 
 
 var blockFunc = window.setInterval(function(){
@@ -138,10 +137,12 @@ var loop = window.setInterval(function(){
                     user = user.substring(0, user.length - 1);
                     console.log(user);
                     document.getElementById('login').innerHTML = `Username:<br>&gt; ${user}`;
+                    LoggedIn = false;
                 } else {
                     pass = pass.substring(0, pass.length - 1);
                     console.log(pass);
                     document.getElementById('login').innerHTML = `Password:<br>&gt; ${'*'.repeat(pass.length)}`;
+                    LoggedIn = false;
                 }
                 
                 
@@ -154,9 +155,13 @@ var loop = window.setInterval(function(){
         $(document).ready(()=>{
             $.getJSON("https://ipinfo.io",
             function (response) {
-            if (response.ip == sha512("dd49fc4c3e1b6dbd5c7c082672693e8c04572d580db180b977f3c6d3327977c05d875198f9e2d80093e8b04c3872b1847b1193312795d5935890b9e7304958f2")) {
 
-           
+           // if (response.ip == sha512("dd49fc4c3e1b6dbd5c7c082672693e8c04572d580db180b977f3c6d3327977c05d875198f9e2d80093e8b04c3872b1847b1193312795d5935890b9e7304958f2")) {
+            
+           // }
+           // else {
+                
+           // }
         window.onkeypress = function(event) {
             var key = event.keyCode || event.charCode;
         
@@ -197,7 +202,7 @@ var loop = window.setInterval(function(){
 
                                 document.getElementById('form1').hidden=false;
                                 runCursor = false;
-
+                                LoggedIn = true;
 
                                 
 
@@ -206,6 +211,7 @@ var loop = window.setInterval(function(){
                                 document.getElementById('login').innerHTML = `Fail. Reload the page.`;
                                 window.onkeypress = function() {};
                                 window.onkeydown = function() {};
+                                LoggedIn = false;
                             }
                         })
                     })
@@ -231,7 +237,7 @@ var loop = window.setInterval(function(){
 
             
         };
-    }
+    
             }, "jsonp");
         })  
 
@@ -258,13 +264,38 @@ var loop = window.setInterval(function(){
 
 
 function runCommand(command) {
+    sha512(user).then(u => {
+                        console.log(u);
+                        sha512(pass).then(p => {
+                            console.log(p);
+                            if (logins[u] ===  p) {
+    if (LoggedIn == true) {
     document.getElementById('terminal').innerHTML += `${document.getElementById('prompt').innerHTML} ${command}<br>`;
     if (command = "help") {
         document.getElementById("terminal").innerHTML += "List of commands:<br>help: lists commands<br>"
     }
 }
+                            }
+                            else {
+                                console.error("Error: intrusion attempt detected: logging attempt");
+                                console.groupCollapsed("Error log:");
+                                console.log("Issue: tried to run terminal command without logging in:");
+                                console.log("log in normally or by changing user and pass variables.");
+                                console.groupEnd();
+                                email();
+                            }
+                        })
+                    })
+}
 
-
+function email() {
+  const xhttp = new XMLHttpRequest();
+  xhttp.onload = function() {
+    document.getElementById("demo").innerHTML = this.responseText;
+    }
+  xhttp.open("GET", "http://localhost:8080", true);
+  xhttp.send();
+}
 function terminalFunc() {
     var permisions = [];
     var directory = '~';
@@ -315,7 +346,7 @@ function terminalFunc() {
                 console.log(command);
             }
         } 
-}
+} 
 
 
 
