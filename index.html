@@ -53,7 +53,204 @@
 </head>
 <body onload="createCaptcha()">
     <span id="begin"></span><span id="login"></span><span id = "terminal"></span><span id="prompt"></span><span id="entry"></span><span id="block">&block;</span>
+    <div id = "rsa" hidden><!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>RSA Encryption Tool</title>
+            <style>
+                body {
+                    font-family: 'Courier New', monospace;
+                    margin: 0;
+                    background-color: #00000000;
+                    color: #00ff00;
+                    padding: 20px;
+                }
+                h1, h2 {
+                    text-align: center;
+                    color: #00ff00;
+                }
+                .container {
+                    max-width: 600px;
+                    margin: auto;
+                    padding: 20px;
+                    border: 1px solid #00ff00;
+                    border-radius: 10px;
+                    background: rgba(30, 30, 30, 0.9);
+                }
+                input[type="number"], input[type="text"] {
+                    width: 100%;
+                    padding: 10px;
+                    margin: 10px 0;
+                    border: 1px solid #00ff00;
+                    border-radius: 5px;
+                    background: #333;
+                    color: #00ff00;
+                }
+                button {
+                    width: 100%;
+                    padding: 10px;
+                    background-color: #00b300;
+                    border: none;
+                    border-radius: 5px;
+                    color: white;
+                    font-size: 16px;
+                    cursor: pointer;
+                }
+                button:hover {
+                    background-color: #009900;
+                }
+                .output {
+                    margin-top: 10px;
+                    padding: 10px;
+                    background-color: #222;
+                    border-radius: 5px;
+                    border: 1px solid #00ff00;
+                    display: none; /* Hide output by default */
+                }
+                .rules {
+                    margin: 10px 0;
+                    padding: 10px;
+                    background-color: #444;
+                    border-radius: 5px;
+                    border: 1px solid #00ff00;
+                }
+                ul {
+                    padding-left: 20px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>RSA Encryption Tool</h1>
+                
+                <h2>Key Generation</h2>
+                <input type="number" id="primeP" placeholder="Enter prime number p" oninput="updatePhi()">
+                <input type="number" id="primeQ" placeholder="Enter prime number q" oninput="updatePhi()">
+                <div id="phiValue" class="output"></div>
+                <input type="number" id="customE" placeholder="Enter e (Public Exponent)">
+                <div class="rules">
+                    <strong>Rules for e:</strong>
+                    <ul>
+                        <li>1 < e < (p-1)(q-1)</li>
+                        <li>e must be coprime(sharing no common factor other than 1) to (p-1)(q-1)</li>
+                        <li>Common choices for e are 3, 5, 17, 65537</li>
+                    </ul>
+                </div>
+                <button onclick="generate()">Generate Keys</button>
+                <div class="output" id="keyOutput"></div>
+        
+                <h2>Encryption</h2>
+                <input type="number" id="encryptMessage" placeholder="Insert Number to Encrypt">
+                <input type="number" id="encryptE" placeholder="Insert e (Public Key)">
+                <input type="number" id="encryptN" placeholder="Insert N (Public Key)">
+                <button onclick="encrypt()">Encrypt Message</button>
+                <div class="output" id="encryptOutput"></div>
+        
+                <h2>Decryption</h2>
+                <input type="number" id="decryptMessage" placeholder="Enter Encrypted Message">
+                <input type="number" id="decryptD" placeholder="Enter Private Key">
+                <input type="number" id="decryptN" placeholder="Enter N">
+                <button onclick="decrypt()">Decrypt Message</button>
+                <div class="output" id="decryptOutput"></div>
+            </div>
+        
+            <script>
+                var N;
+                var e;
+                var d;
+        
+                function updatePhi() {
+                    let p = Number(document.getElementById('primeP').value);
+                    let q = Number(document.getElementById('primeQ').value);
+                    if (p > 1 && q > 1) {
+                        let phi = (p - 1) * (q - 1);
+                        document.getElementById('phiValue').innerText = `Value of (p-1)(q-1): ${phi}, Prime factors: ${primeFactors(phi)}`;
+                        document.getElementById('phiValue').style.display = 'block';
+                    } else {
+                        document.getElementById('phiValue').innerText = '';
+                    }
+                }
+        
+                function generate() {
+                    let p = Number(document.getElementById('primeP').value);
+                    let q = Number(document.getElementById('primeQ').value);
+                    e = Number(document.getElementById('customE').value);
+        
+                    if (!isPrime(p) || !isPrime(q)) {
+                        alert("Please ensure both p and q are prime numbers.");
+                        return;
+                    }
+        
+                    N = p * q;
+                    const phi = (p - 1) * (q - 1);
+        
+                    // Check if e is valid
+                    if (e <= 1 || e >= phi || gcd(e, phi) !== 1) {
+                        alert("Invalid value for e. Ensure: 1 < e < (p-1)(q-1) and e is coprime to (p-1)(q-1).");
+                        return;
+                    }
+        
+                    d = modInverse(e, phi);
+                    document.getElementById('keyOutput').innerText = `Public Key (give this to others): (${N}, ${e})\nPrivate Key (keep this to yourself): ${d}`;
+                    document.getElementById('keyOutput').style.display = 'block'; // Show output box
+                }
+        
+                function encrypt() {
+                    let message = Number(document.getElementById('encryptMessage').value);
+                    let pke = Number(document.getElementById('encryptE').value);
+                    let pkn = Number(document.getElementById('encryptN').value);
+                    let encryptedMessage = (message ** pke) % pkn;
+                    document.getElementById('encryptOutput').innerText = `Encrypted Message: ${encryptedMessage}`;
+                    document.getElementById('encryptOutput').style.display = 'block'; // Show output box
+                }
+        
+                function decrypt() {
+                    let dmx = BigInt(document.getElementById('decryptMessage').value);
+                    let dmd = BigInt(document.getElementById('decryptD').value);
+                    let dmn = BigInt(document.getElementById('decryptN').value);
+                    let decryptedMessage = (dmx ** dmd) % dmn;
+                    document.getElementById('decryptOutput').innerText = `The Decrypted Message is: ${decryptedMessage}`;
+                    document.getElementById('decryptOutput').style.display = 'block'; // Show output box
+                }
+        
+                function isPrime(value) {
+                    if (value < 2) return false; // Check for numbers less than 2
+                    for (let i = 2; i <= Math.sqrt(value); i++) {
+                        if (value % i === 0) return false;
+                    }
+                    return true;
+                }
 
+                function primeFactors(n) {
+            const factors = [];
+            for (let i = 2; i <= n; i++) {
+                while (n % i === 0) {
+                    factors.push(i);
+                    n /= i;
+                }
+            }
+            return [...new Set(factors)]; // Return unique factors
+        }
+                function gcd(a, b) {
+                    while (b) {
+                        [a, b] = [b, a % b];
+                    }
+                    return a;
+                }
+        
+                function modInverse(a, m) {
+                    a = a % m;
+                    for (let x = 1; x < m; x++) {
+                        if ((a * x) % m === 1) return x;
+                    }
+                    return null; // If no modular inverse exists
+                }
+            </script>
+        </body>
+        </html>
+        </div>
     <form hidden id="form1" onsubmit="validateCaptcha()">
         <div id="captcha">
         </div>
@@ -77,7 +274,10 @@ var logins = {
     "14e5991ed821912dc5416fdd97caeca81bf8f83a908762b7209b51db610b5a47b1cf0bf46e6c92b07e431a42f995fa5587863205a73b589ef4fe797aa64e25bb",
 
     "a8783749cff88f94fe983f9e4123a3b5848216eb0fa95f0c334abe27fea06c391e376512641c88c0ded61c2b08446a29c38f90a38583b9eb90a42d218ce24c39":
-    "648824920acb2a1492d4bf096186662efe056bee6471731a0cdc4f73fe9049c1e7ace1f93f898657771df3acece7e4b6d7f9206d4a56c5eaa9d18b69d9ea6bf9"
+    "648824920acb2a1492d4bf096186662efe056bee6471731a0cdc4f73fe9049c1e7ace1f93f898657771df3acece7e4b6d7f9206d4a56c5eaa9d18b69d9ea6bf9",
+    "6d53e36f10874b2e9d184e7574c25f867b66a3a1079161ff9664fa38a3a48118daf6548fd7f0a3565cde18994cb29e7ee2b1ed97d3be7a69afb219cb83884a90":
+    "14e5991ed821912dc5416fdd97caeca81bf8f83a908762b7209b51db610b5a47b1cf0bf46e6c92b07e431a42f995fa5587863205a73b589ef4fe797aa64e25bb"
+
 
 
 }; // Encrypted login data(remember to change to logins.json)
@@ -272,7 +472,11 @@ function runCommand(command) {
     if (LoggedIn == true) {
     document.getElementById('terminal').innerHTML += `${document.getElementById('prompt').innerHTML} ${command}<br>`;
     if (command == "help") {
-        document.getElementById("terminal").innerHTML += "List of commands:<br>help: lists commands<br>"
+        document.getElementById("terminal").innerHTML += "List of commands:<br>help: lists commands<br>RSA-Encrypt: opens a prime factor encryption, decryption, and key generation tool<br>"
+    }
+    else if (command == "RSA-Encrypt")
+    {
+        document.getElementById("rsa").removeAttribute("hidden");
     }
 }
                             }
